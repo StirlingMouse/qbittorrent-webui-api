@@ -344,7 +344,12 @@ impl super::Api {
             form = form.text("seedingTimeLimit", seeding_time_limit.to_string());
         }
 
-        self.http_client.post(url).multipart(form).send().await?;
+        self.http_client
+            .post(url)
+            .multipart(form)
+            .send()
+            .await?
+            .error_for_status()?;
 
         Ok(())
     }
