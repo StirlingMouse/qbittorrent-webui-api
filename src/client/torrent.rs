@@ -310,12 +310,14 @@ impl super::Api {
         }
         form = form.text("skip_checking", params.skip_checking.to_string());
         form = form.text("stopped", params.stopped.to_string());
-        form = form.text("autoTMM", params.auto_tmm.to_string());
         form = form.text("sequentialDownload", params.sequential_download.to_string());
         form = form.text(
             "firstLastPiecePrio",
             params.first_last_piece_prio.to_string(),
         );
+        if let Some(auto_tmm) = params.auto_tmm {
+            form = form.text("autoTMM", auto_tmm.to_string());
+        }
         if let Some(savepath) = params.savepath {
             form = form.text("savepath", savepath);
         }

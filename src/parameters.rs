@@ -252,7 +252,7 @@ pub struct TorrentAddUrls {
     /// Set torrent seeding time limit. Unit in minutes
     pub seeding_time_limit: Option<i64>,
     /// Whether Automatic Torrent Management should be used
-    pub auto_tmm: bool,
+    pub auto_tmm: Option<bool>,
     /// Enable sequential download. Possible values are `true`, `false` (default)
     pub sequential_download: bool,
     /// Prioritize download first last piece. Possible values are `true`, `false` (default)
@@ -275,7 +275,7 @@ impl TorrentAddUrls {
             dl_limit: None,
             ratio_limit: None,
             seeding_time_limit: None,
-            auto_tmm: false,
+            auto_tmm: None,
             sequential_download: false,
             first_last_piece_prio: false,
         }
