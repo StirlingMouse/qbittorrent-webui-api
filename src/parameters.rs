@@ -236,8 +236,8 @@ pub struct TorrentAddUrls {
     pub tags: Option<Vec<String>>,
     /// Skip hash checking. Possible values are `true`, `false` (default)
     pub skip_checking: bool,
-    /// Add torrents in the paused state. Possible values are `true`, `false` (default)
-    pub paused: bool,
+    /// Add torrents in the stopped state. Possible values are `true`, `false` (default)
+    pub stopped: bool,
     /// Create the root folder. Possible values are `"true"`, `"false"`, unset (default)
     pub root_folder: Option<String>,
     /// Rename torrent
@@ -266,7 +266,7 @@ impl TorrentAddUrls {
             category: None,
             tags: None,
             skip_checking: false,
-            paused: false,
+            stopped: false,
             root_folder: None,
             rename: None,
             up_limit: None,

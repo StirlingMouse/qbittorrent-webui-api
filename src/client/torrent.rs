@@ -299,7 +299,7 @@ impl super::Api {
         let mut form = multipart::Form::new();
         form = form.text("urls", params.urls.join("\n"));
         form = form.text("skip_checking", params.skip_checking.to_string());
-        form = form.text("paused", params.paused.to_string());
+        form = form.text("stopped", params.stopped.to_string());
         form = form.text("autoTMM", params.auto_tmm.to_string());
         form = form.text("sequentialDownload", params.sequential_download.to_string());
         form = form.text(
