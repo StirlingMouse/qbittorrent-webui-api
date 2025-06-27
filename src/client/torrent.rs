@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use reqwest::multipart;
+use reqwest::multipart::{self, Part};
 
 use crate::{
     error::Error,
@@ -297,7 +297,17 @@ impl super::Api {
         let url = self._build_url("api/v2/torrents/add").await?;
 
         let mut form = multipart::Form::new();
-        form = form.text("urls", params.urls.join("\n"));
+        if !params.urls.is_empty() {
+            form = form.text("urls", params.urls.join("\n"));
+        }
+        for torrent in params.torrents {
+            form = form.part(
+                "torrents",
+                Part::bytes(torrent)
+                    .file_name("file.torrent")
+                    .mime_str("application/x-bittorrent")?,
+            );
+        }
         form = form.text("skip_checking", params.skip_checking.to_string());
         form = form.text("stopped", params.stopped.to_string());
         form = form.text("autoTMM", params.auto_tmm.to_string());

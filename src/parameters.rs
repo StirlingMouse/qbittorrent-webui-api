@@ -227,7 +227,8 @@ impl ToString for TorrentSort {
 pub struct TorrentAddUrls {
     /// Torrent URLs separated with newlines
     pub urls: Vec<String>,
-    // TODO: add `pub torrents`
+    /// Raw torrent files
+    pub torrents: Vec<Vec<u8>>,
     /// Download folder
     pub savepath: Option<String>,
     /// Category for the torrent
@@ -262,6 +263,7 @@ impl TorrentAddUrls {
     pub fn default(urls: Vec<String>) -> Self {
         Self {
             urls,
+            torrents: vec![],
             savepath: None,
             category: None,
             tags: None,
