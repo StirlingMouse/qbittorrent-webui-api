@@ -17,36 +17,36 @@ impl super::Api {
     ///
     /// * `parames` - Parameter object
     pub async fn torrents(&self, parames: TorrentListParams) -> Result<Vec<TorrentInfo>, Error> {
-        let mut url = self._build_url("api/v2/torrents/info").await?;
+        let url = self._build_url("api/v2/torrents/info").await?;
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("reverse", &parames.reverse.to_string());
+        let mut query = vec![];
+        query.push(("reverse", parames.reverse.to_string()));
         if let Some(filter) = parames.filter {
-            query.append_pair("filter", &filter.to_string());
+            query.push(("filter", filter.to_string()));
         }
         if let Some(category) = parames.category {
-            query.append_pair("category", &category);
+            query.push(("category", category));
         }
         if let Some(tag) = parames.tag {
-            query.append_pair("tag", &tag);
+            query.push(("tag", tag));
         }
         if let Some(sort) = parames.sort {
-            query.append_pair("sort", &sort.to_string());
+            query.push(("sort", sort.to_string()));
         }
         if let Some(limit) = parames.limit {
-            query.append_pair("limit", &limit.to_string());
+            query.push(("limit", limit.to_string()));
         }
         if let Some(offset) = parames.offset {
-            query.append_pair("offset", &offset.to_string());
+            query.push(("offset", offset.to_string()));
         }
         if let Some(hashes) = parames.hashes {
-            query.append_pair("hashes", &hashes.join("|"));
+            query.push(("hashes", hashes.join("|")));
         }
-        drop(query);
 
         let torrents = self
             .http_client
             .get(url)
+            .query(&query)
             .send()
             .await?
             .json::<Vec<TorrentInfo>>()
@@ -127,25 +127,25 @@ impl super::Api {
         hash: &str,
         indexes: Option<Vec<i64>>,
     ) -> Result<Vec<TorrentContent>, Error> {
-        let mut url = self._build_url("api/v2/torrents/files").await?;
+        let url = self._build_url("api/v2/torrents/files").await?;
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hash", &hash);
+        let mut query = vec![];
+        query.push(("hash", hash.to_string()));
         if let Some(indexes) = indexes {
-            query.append_pair(
+            query.push((
                 "filter",
-                &indexes
+                indexes
                     .iter()
                     .map(|&x| x.to_string())
                     .collect::<Vec<String>>()
                     .join("|"),
-            );
+            ));
         }
-        drop(query);
 
         let webseeds = self
             .http_client
             .get(url)
+            .query(&query)
             .send()
             .await?
             .json::<Vec<TorrentContent>>()
@@ -160,15 +160,14 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the piece states of.
     pub async fn pieces_states(&self, hash: &str) -> Result<Vec<PiecesState>, Error> {
-        let mut url = self._build_url("api/v2/torrents/pieceStates").await?;
+        let url = self._build_url("api/v2/torrents/pieceStates").await?;
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hash", &hash);
-        drop(query);
+        let query = [("hash", hash)];
 
         let pieces = self
             .http_client
             .get(url)
+            .query(&query)
             .send()
             .await?
             .json::<Vec<PiecesState>>()
@@ -183,15 +182,14 @@ impl super::Api {
     ///
     /// * `hash` - The hash of the torrent you want to get the pieces hashes of.
     pub async fn pieces_hashes(&self, hash: &str) -> Result<Vec<String>, Error> {
-        let mut url = self._build_url("api/v2/torrents/pieceHashes").await?;
+        let url = self._build_url("api/v2/torrents/pieceHashes").await?;
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hash", &hash);
-        drop(query);
+        let query = [("hash", hash)];
 
         let pieces = self
             .http_client
             .get(url)
+            .query(&query)
             .send()
             .await?
             .json::<Vec<String>>()
@@ -206,13 +204,11 @@ impl super::Api {
     ///
     /// * `hashes` - Hashes list of torrents to stop.
     pub async fn stop(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let mut url = self._build_url("api/v2/torrents/stop").await?;
+        let url = self._build_url("api/v2/torrents/stop").await?;
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hashes", &hashes.join("|"));
-        drop(query);
+        let query = [("hashes", hashes.join("|"))];
 
-        self.http_client.get(url).send().await?;
+        self.http_client.get(url).query(&query).send().await?;
 
         Ok(())
     }
@@ -223,13 +219,11 @@ impl super::Api {
     ///
     /// * `hashes` - Hashes list of torrents to start.
     pub async fn start(&self, hashes: Vec<&str>) -> Result<(), Error> {
-        let mut url = self._build_url("api/v2/torrents/start").await?;
+        let url = self._build_url("api/v2/torrents/start").await?;
 
-        let mut query = url.query_pairs_mut();
-        query.append_pair("hashes", &hashes.join("|"));
-        drop(query);
+        let query = [("hashes", hashes.join("|"))];
 
-        self.http_client.get(url).send().await?;
+        self.http_client.get(url).query(&query).send().await?;
 
         Ok(())
     }
